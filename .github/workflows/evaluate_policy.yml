@@ -6,7 +6,7 @@ on:
       PROJECT_NAME:
         description: "Name of the project"
         required: true
-        default: "sample-proj-drift"
+        default: "sample-proj-opa"
       REGION:
         description: "Region for the sub account"
         required: true
@@ -68,8 +68,8 @@ jobs:
       id: execute_opa
       shell: bash
       run: |
-        autoexec=$(opa exec --decision terraform/analysis/autoexec --bundle policy/ ./infra/tfplan.json | jq '.result[].result')
-        score=$(opa exec --decision terraform/analysis/score --bundle policy/ ./infra/tfplan.json | jq '.result[].result')
+        autoexec=$(opa exec --decision terraform/analysis/autoexec --bundle policy/ tfplan.json | jq '.result[].result')
+        score=$(opa exec --decision terraform/analysis/score --bundle policy/ tfplan.json | jq '.result[].result')
         echo "Automatic execution possible (true/false): ${autoexec}"
         echo "Score of change: ${score}"
         
