@@ -6,7 +6,7 @@ on:
       PROJECT_NAME:
         description: "Name of the project"
         required: true
-        default: "sample-proj-drift"
+        default: "sample-proj-opa"
       REGION:
         description: "Region for the sub account"
         required: true
@@ -61,8 +61,8 @@ jobs:
       run: |
         export BTP_USERNAME=${{ secrets.BTP_USERNAME }}
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} plan -var globalaccount=${{ secrets.GLOBALACCOUNT }} -var region=${{ github.event.inputs.REGION }} -var project_name=${{ github.event.inputs.PROJECT_NAME }} -var stage=${{ github.event.inputs.STAGE }} -var costcenter=${{ github.event.inputs.COST_CENTER }} -var org_name=${{ github.event.inputs.ORGANIZATION }} -no-color --out ${{ env.PATH_TO_TFSCRIPT }}/tfplan.binary
-        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} show -json tfplan.binary > ${{ env.PATH_TO_TFSCRIPT }}/tfplan.json
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} plan -var globalaccount=${{ secrets.GLOBALACCOUNT }} -var region=${{ github.event.inputs.REGION }} -var project_name=${{ github.event.inputs.PROJECT_NAME }} -var stage=${{ github.event.inputs.STAGE }} -var costcenter=${{ github.event.inputs.COST_CENTER }} -var org_name=${{ github.event.inputs.ORGANIZATION }} -no-color --out tfplan.binary
+        terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} show -json tfplan.binary > tfplan.json
         ls -la
         cd infra
         ls -la
@@ -71,8 +71,8 @@ jobs:
       id: execute_opa
       shell: bash
       run: |
-        autoexec=$(opa exec --decision terraform/analysis/autoexec --bundle policy/ ./infra/tfplan.json | jq '.result[].result')
-        score=$(opa exec --decision terraform/analysis/score --bundle policy/ ./infra/tfplan.json | jq '.result[].result')
+        autoexec=$(opa exec --decision terraform/analysis/autoexec --bundle policy/ tfplan.json | jq '.result[].result')
+        score=$(opa exec --decision terraform/analysis/score --bundle policy/ tfplan.json | jq '.result[].result')
         echo "Automatic execution possible (true/false): ${autoexec}"
         echo "Score of change: ${score}"
         
