@@ -1,4 +1,4 @@
-name: Basis Subaccount via Terraform
+name: Evaluate Open Policy Agent for Terraform
 
 on:
   workflow_dispatch:
