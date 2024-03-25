@@ -63,9 +63,6 @@ jobs:
         export BTP_PASSWORD=${{ secrets.BTP_PASSWORD }}
         terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} plan -var globalaccount=${{ secrets.GLOBALACCOUNT }} -var region=${{ github.event.inputs.REGION }} -var project_name=${{ github.event.inputs.PROJECT_NAME }} -var stage=${{ github.event.inputs.STAGE }} -var costcenter=${{ github.event.inputs.COST_CENTER }} -var org_name=${{ github.event.inputs.ORGANIZATION }} -no-color --out tfplan.binary
         terraform -chdir=${{ env.PATH_TO_TFSCRIPT }} show -json tfplan.binary > tfplan.json
-        ls -la
-        cd infra
-        ls -la
     
     - name: Execute OPA policy
       id: execute_opa
